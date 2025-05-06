@@ -1,16 +1,18 @@
-
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, Calendar, Database, FileText, LayoutDashboard, Settings } from "lucide-react";
+import { BarChart, Calendar, Database, FileText, LayoutDashboard, Search, Settings, Users } from "lucide-react";
 import ModuleGrid from "@/components/ModuleGrid";
 import { allModules, moduleGroups } from "@/data/modules";
+import { useToast } from "@/hooks/use-toast";
+import "../styles/dashboard.css";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast();
   
   const filteredModules = searchTerm
     ? allModules.filter(module => 
@@ -23,6 +25,18 @@ const Dashboard = () => {
       )
     : [];
 
+  const clearSearch = () => {
+    setSearchTerm("");
+  };
+
+  const handleModuleClick = (moduleId: string) => {
+    // Em uma implementação real, isso navegaria para o módulo específico
+    toast({
+      title: "Módulo selecionado",
+      description: `Você selecionou o módulo ${moduleId}`,
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -33,14 +47,15 @@ const Dashboard = () => {
               <h1 className="text-3xl font-bold mb-2">Dashboard ERP Escolar</h1>
               <p className="text-gray-600">Gerencie todos os módulos do seu sistema em um só lugar</p>
             </div>
-            <div className="w-full md:w-64 mt-4 md:mt-0">
+            <div className="w-full md:w-64 mt-4 md:mt-0 relative">
               <Input
                 type="search"
                 placeholder="Pesquisar módulos..."
-                className="w-full"
+                className="w-full pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
           </div>
 
@@ -48,7 +63,11 @@ const Dashboard = () => {
             <div className="mt-4">
               <h2 className="text-xl font-semibold mb-4">Resultados da pesquisa: {filteredModules.length}</h2>
               {filteredModules.length > 0 ? (
-                <ModuleGrid modules={filteredModules} searchTerm={searchTerm} />
+                <ModuleGrid 
+                  modules={filteredModules} 
+                  searchTerm={searchTerm} 
+                  onClearSearch={clearSearch}
+                />
               ) : (
                 <Card>
                   <CardContent className="p-6 text-center">
@@ -87,12 +106,12 @@ const Dashboard = () => {
               </TabsList>
               
               <TabsContent value="todos" className="mt-0">
-                <ModuleGrid modules={allModules} />
+                <ModuleGrid modules={allModules} onClearSearch={clearSearch} />
               </TabsContent>
               
               {moduleGroups.map((group) => (
                 <TabsContent key={group.id} value={group.id} className="mt-0">
-                  <ModuleGrid modules={group.modules} />
+                  <ModuleGrid modules={group.modules} onClearSearch={clearSearch} />
                 </TabsContent>
               ))}
             </Tabs>
