@@ -6,6 +6,7 @@ import { moduleGroups } from "@/data/modules";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import AcademicoPage from "@/components/academic/AcademicoPage";
 
 export default function ModulePage() {
   const { role, categoryId } = useParams<{ role: string; categoryId: string }>();
@@ -24,6 +25,11 @@ export default function ModulePage() {
   
   if (!moduleGroup) {
     return <Navigate to={`/dashboard/${role}`} replace />;
+  }
+  
+  // Special handling for Académico category
+  if (categoryId === "academico") {
+    return <AcademicoPage userRole={userRole} />;
   }
   
   // Filter modules based on search term
