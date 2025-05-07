@@ -10,6 +10,7 @@ import Recursos from "./pages/Recursos";
 import Contacto from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import RoleDashboardPage from "./pages/RoleDashboardPage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/recursos" element={<Recursos />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:role" element={<RoleDashboardPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

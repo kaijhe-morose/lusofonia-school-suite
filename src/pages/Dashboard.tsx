@@ -1,40 +1,96 @@
-import { useState } from "react";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, Calendar, Database, FileText, LayoutDashboard, Search, Settings, Users } from "lucide-react";
-import ModuleGrid from "@/components/ModuleGrid";
-import { allModules, moduleGroups } from "@/data/modules";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { UserRole } from "@/components/DashboardLayout";
+import { 
+  LayoutDashboard, 
+  User, 
+  Users, 
+  School,
+  GraduationCap,
+  FileText,
+  BarChart
+} from "lucide-react";
 import "../styles/dashboard.css";
 
+interface RoleCardProps {
+  role: UserRole;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}
+
+const RoleCard = ({ role, title, description, icon, onClick }: RoleCardProps) => (
+  <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <div className="h-2 bg-gradient-to-r from-primary to-purple-400"></div>
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        {icon}
+        {title}
+      </CardTitle>
+      <CardDescription>{description}</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <Button onClick={onClick} className="w-full">
+        Acessar Dashboard
+      </Button>
+    </CardContent>
+  </Card>
+);
+
 const Dashboard = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { toast } = useToast();
+  const navigate = useNavigate();
   
-  const filteredModules = searchTerm
-    ? allModules.filter(module => 
-        module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        module.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        module.modules.some(m => m.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        module.modules.some(m => 
-          m.submods && m.submods.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
-        )
-      )
-    : [];
+  const roleData: Array<{
+    role: UserRole;
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+  }> = [
+    {
+      role: "super",
+      title: "Super Utilizador",
+      description: "Acesso total ao sistema e configurações avançadas",
+      icon: <LayoutDashboard className="h-5 w-5 text-primary" />
+    },
+    {
+      role: "admin",
+      title: "Administrador",
+      description: "Gerenciamento da instituição e recursos",
+      icon: <School className="h-5 w-5 text-primary" />
+    },
+    {
+      role: "professor",
+      title: "Professor",
+      description: "Gestão de turmas, notas e material didático",
+      icon: <GraduationCap className="h-5 w-5 text-primary" />
+    },
+    {
+      role: "aluno",
+      title: "Aluno",
+      description: "Acesso a aulas, notas e tarefas",
+      icon: <User className="h-5 w-5 text-primary" />
+    },
+    {
+      role: "encarregado",
+      title: "Encarregado de Educação",
+      description: "Acompanhamento dos educandos",
+      icon: <Users className="h-5 w-5 text-primary" />
+    },
+    {
+      role: "staff",
+      title: "Staff",
+      description: "Operações administrativas e suporte",
+      icon: <FileText className="h-5 w-5 text-primary" />
+    }
+  ];
 
-  const clearSearch = () => {
-    setSearchTerm("");
-  };
-
-  const handleModuleClick = (moduleId: string) => {
-    // Em uma implementação real, isso navegaria para o módulo específico
-    toast({
-      title: "Módulo selecionado",
-      description: `Você selecionou o módulo ${moduleId}`,
-    });
+  const navigateToRoleDashboard = (role: UserRole) => {
+    navigate(`/dashboard/${role}`);
   };
 
   return (
@@ -42,80 +98,23 @@ const Dashboard = () => {
       <Header />
       <main className="flex-grow bg-gray-50 py-8">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Dashboard ERP Escolar</h1>
-              <p className="text-gray-600">Gerencie todos os módulos do seu sistema em um só lugar</p>
-            </div>
-            <div className="w-full md:w-64 mt-4 md:mt-0 relative">
-              <Input
-                type="search"
-                placeholder="Pesquisar módulos..."
-                className="w-full pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            </div>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Selecione o Tipo de Utilizador</h1>
+            <p className="text-gray-600">Aceda à área correspondente ao seu perfil no ERP Escolar</p>
           </div>
 
-          {searchTerm ? (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold mb-4">Resultados da pesquisa: {filteredModules.length}</h2>
-              {filteredModules.length > 0 ? (
-                <ModuleGrid 
-                  modules={filteredModules} 
-                  searchTerm={searchTerm} 
-                  onClearSearch={clearSearch}
-                />
-              ) : (
-                <Card>
-                  <CardContent className="p-6 text-center">
-                    <p className="text-gray-600">Nenhum módulo encontrado para "{searchTerm}"</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          ) : (
-            <Tabs defaultValue="todos" className="w-full">
-              <TabsList className="mb-6 flex flex-wrap bg-transparent gap-2">
-                <TabsTrigger value="todos" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                  <LayoutDashboard className="h-4 w-4 mr-2" />
-                  Todos os Módulos
-                </TabsTrigger>
-                <TabsTrigger value="academico" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Académico
-                </TabsTrigger>
-                <TabsTrigger value="administrativo" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Administrativo
-                </TabsTrigger>
-                <TabsTrigger value="financeiro" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                  <BarChart className="h-4 w-4 mr-2" />
-                  Financeiro
-                </TabsTrigger>
-                <TabsTrigger value="recursos" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                  <Database className="h-4 w-4 mr-2" />
-                  Recursos
-                </TabsTrigger>
-                <TabsTrigger value="agenda" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Agenda e Eventos
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="todos" className="mt-0">
-                <ModuleGrid modules={allModules} onClearSearch={clearSearch} />
-              </TabsContent>
-              
-              {moduleGroups.map((group) => (
-                <TabsContent key={group.id} value={group.id} className="mt-0">
-                  <ModuleGrid modules={group.modules} onClearSearch={clearSearch} />
-                </TabsContent>
-              ))}
-            </Tabs>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {roleData.map((data) => (
+              <RoleCard
+                key={data.role}
+                role={data.role}
+                title={data.title}
+                description={data.description}
+                icon={data.icon}
+                onClick={() => navigateToRoleDashboard(data.role)}
+              />
+            ))}
+          </div>
         </div>
       </main>
       <Footer />

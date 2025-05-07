@@ -21,3 +21,70 @@
   justify-content: center;
   border-radius: 8px;
 }
+
+/* Role-specific accent colors */
+[data-user-role="super"] .sidebar-accent {
+  background-color: #9b87f5;
+}
+
+[data-user-role="admin"] .sidebar-accent {
+  background-color: #3b82f6;
+}
+
+[data-user-role="professor"] .sidebar-accent {
+  background-color: #10b981;
+}
+
+[data-user-role="aluno"] .sidebar-accent {
+  background-color: #f59e0b;
+}
+
+[data-user-role="encarregado"] .sidebar-accent {
+  background-color: #8b5cf6;
+}
+
+[data-user-role="staff"] .sidebar-accent {
+  background-color: #ef4444;
+}
+
+/* Role-based avatars */
+[data-user-role="super"] .role-avatar {
+  background-color: #9b87f5;
+}
+
+[data-user-role="admin"] .role-avatar {
+  background-color: #3b82f6;
+}
+
+[data-user-role="professor"] .role-avatar {
+  background-color: #10b981;
+}
+
+[data-user-role="aluno"] .role-avatar {
+  background-color: #f59e0b;
+}
+
+[data-user-role="encarregado"] .role-avatar {
+  background-color: #8b5cf6;
+}
+
+[data-user-role="staff"] .role-avatar {
+  background-color: #ef4444;
+}
+
+/* Responsive sidebar adjustments */
+@media (max-width: 768px) {
+  .sidebar-expanded {
+    display: none;
+  }
+  
+  .content-with-sidebar {
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-sidebar-trigger {
+    display: none;
+  }
+}
