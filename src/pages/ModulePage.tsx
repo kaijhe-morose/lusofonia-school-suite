@@ -1,7 +1,7 @@
 
 import { useParams, Navigate } from "react-router-dom";
 import { DashboardLayout, UserRole } from "@/components/DashboardLayout";
-import { ModuleGrid } from "@/components/ModuleGrid";
+import ModuleGrid from "@/components/ModuleGrid";
 import { moduleGroups } from "@/data/modules";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
