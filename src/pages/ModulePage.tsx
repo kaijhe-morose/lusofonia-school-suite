@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import AcademicoPage from "@/components/academic/AcademicoPage";
+import AvaliacoesPage from "@/components/academic/AvaliacoesPage";
 
 export default function ModulePage() {
   const { role, categoryId } = useParams<{ role: string; categoryId: string }>();
@@ -30,6 +31,11 @@ export default function ModulePage() {
   // Special handling for Académico category
   if (categoryId === "academico") {
     return <AcademicoPage userRole={userRole} />;
+  }
+  
+  // Special handling for Avaliações & Exames
+  if (categoryId === "avaliacoes") {
+    return <AvaliacoesPage userRole={userRole} />;
   }
   
   // Filter modules based on search term
