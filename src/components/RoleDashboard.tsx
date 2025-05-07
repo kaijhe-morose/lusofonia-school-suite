@@ -1,7 +1,10 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Calendar, FileText, School, UserRound, Users } from "lucide-react";
+import { BarChart, Calendar, FileText, Grid3x3, School, UserRound, Users } from "lucide-react";
 import { UserRole } from "./DashboardLayout";
+import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
+import { moduleGroups } from "@/data/modules";
 
 interface RoleDashboardProps {
   role: UserRole;
@@ -37,6 +40,45 @@ export function RoleDashboard({ role }: RoleDashboardProps) {
             </CardContent>
           </Card>
         ))}
+      </div>
+      
+      <div className="pt-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">Megamódulos</h2>
+            <p className="text-muted-foreground">Acesse todos os módulos do sistema</p>
+          </div>
+          
+          <Button asChild>
+            <Link to={`/dashboard/${role}/modules`}>
+              <Grid3x3 className="mr-2 h-4 w-4" />
+              Ver todos os módulos
+            </Link>
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {moduleGroups.slice(0, 3).map((group) => (
+            <Link 
+              to={`/dashboard/${role}/category/${group.id}`} 
+              key={group.id}
+              className="block"
+            >
+              <Card className="h-full hover:shadow-lg transition-all overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-primary to-purple-400"></div>
+                <CardHeader>
+                  <CardTitle>{group.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {group.modules.length} módulos disponíveis
+                  </p>
+                  <Button variant="outline" className="w-full">Explorar</Button>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
